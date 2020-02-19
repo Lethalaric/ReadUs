@@ -1,6 +1,6 @@
 create table ReadUs (
 	id INT,
-	bookName VARCHAR(50),
+	bookName VARCHAR(500),
 	totalPage INT,
 	totalTime INT,
 	totalRead INT
