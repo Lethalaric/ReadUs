@@ -1,6 +1,7 @@
 var mysql = require('../utilities/mysqlTransaction');
 var statusModel = require('../models/statusModel');
 var progress = require('../models/progressModel');
+var calc = require('../utilities/calculationUtilities');
 
 exports.addPlan = function(req, res, next) {
 
@@ -48,7 +49,7 @@ exports.progress = function(req, res, next) {
             books.forEach(book => {
 
                 var bookData = book.dataValues;
-                array.push(progress.progressItem(bookData.bookName, bookData.totalRead));
+                array.push(progress.progressItem(bookData.bookName, calc.calculatePercentage(bookData.totalPage, bookData.totalRead)));
             });
 
             res.json(progress.progress(200, array));
