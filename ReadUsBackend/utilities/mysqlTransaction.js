@@ -1,15 +1,15 @@
 var Sequelize = require('sequelize');
+
+const hostname = process.env.MYSQL_HOSTNAME || 'localhost';
+const port = process.env.MYSQL_PORT || '3306';
+const database = process.env.MYSQL_DATABASE || 'readus';
+const username = process.env.MYSQL_USERNAME || 'root';
+const password = process.env.MYSQL_PASSWORD || 'root';
+
 var sequelize = new Sequelize(
     'mysql://' + username + ':' + password + '@' + hostname + ':' + port + '/' + database
 );
 var bookModel = require('../models/bookModel');
-
-
-const hostname = process.env.MYSQL_HOSTNAME || 'localhost';
-const port = process.env.MYSQL_PORT || '3306';
-const database = process.env.MYSQL_DATABASE || 'books';
-const username = process.env.MYSQL_USERNAME || 'root';
-const password = process.env.MYSQL_PASSWORD || 'root';
 
 sequelize.authenticate()
     .then(() => {
@@ -18,27 +18,21 @@ sequelize.authenticate()
         console.log('cannot connect. ', err);
     });
 
-module.exports = {
-    // Sequelize,
-    // sequelize,
-    insertBook,
-    editBook,
-    getBook
-}
-
-var insertBook = (book) => {
+exports.insertBook = (book) => {
     return bookModel.bookModel(Sequelize, sequelize)
         .create(book);
 }
 
-var editBook = (updatedBook, filter) => {
+exports.editBook = (updatedBook, filter) => {
+    console.log('updatedBook : ', updatedBook);
+    console.log('filter : ', filter)
     return bookModel.bookModel(Sequelize, sequelize)
         .update(updatedBook, {
             where: filter
         });
 }
 
-var getBook = (filter) => {
+exports.getBook = (filter) => {
     return bookModel.bookModel(Sequelize, sequelize)
         .findAll({
             where: filter

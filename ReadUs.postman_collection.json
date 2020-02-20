@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "2b8588fc-9aed-44c6-a6ca-db1fa63a2d99",
+		"name": "ReadUs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "insert data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"bookName\":\"perang ketiga\",\n\"totalPage\":100,\n\"totalTime\":2,\n\"totalRead\":0\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/ReadUs/backend/v1/addPlan",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ReadUs",
+						"backend",
+						"v1",
+						"addPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update data",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"id\":101,\n\"totalRead\":20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/ReadUs/backend/v1/editProgress",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ReadUs",
+						"backend",
+						"v1",
+						"editProgress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get progress",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/ReadUs/backend/v1/progress",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ReadUs",
+						"backend",
+						"v1",
+						"progress"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
