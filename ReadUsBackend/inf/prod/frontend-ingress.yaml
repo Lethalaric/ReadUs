@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: readusbackend-frontend
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: readusbackend-frontend
+              servicePort: 8080
+      host: kubesail.io
+

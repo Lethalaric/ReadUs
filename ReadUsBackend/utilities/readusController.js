@@ -2,6 +2,7 @@ var mysql = require('../utilities/mysqlTransaction');
 var statusModel = require('../models/statusModel');
 var progress = require('../models/progressModel');
 var calc = require('../utilities/calculationUtilities');
+var ws = require('../utilities/websocketUtility');
 
 exports.addPlan = function(req, res, next) {
 
@@ -51,6 +52,8 @@ exports.progress = function(req, res, next) {
                 var bookData = book.dataValues;
                 array.push(progress.progressItem(bookData.bookName, calc.calculatePercentage(bookData.totalPage, bookData.totalRead)));
             });
+
+            ws.sendMessage(1, array);
 
             res.json(progress.progress(200, array));
         }).catch(err => {

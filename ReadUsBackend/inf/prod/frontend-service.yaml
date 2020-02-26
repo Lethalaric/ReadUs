@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: readusbackend-frontend
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: readusbackend
+    tier: frontend
+
