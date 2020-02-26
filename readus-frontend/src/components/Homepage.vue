@@ -1,23 +1,50 @@
 <template>
   <div class="grid-container">
+
+    <modal name="start-plan-form"> 
+      <h2>hello world from "start you new plan" button!!!</h2>
+      <div>
+        <label for="fname">First name : </label>
+        <input v-model="fname" type="text" id="fname" name="fname"><br><br>
+      </div>
+      <div>
+        <label for="lname">Last name : </label>
+        <input v-model="lname" type="text" id="lname" name="lname"><br><br>
+      </div>
+      <div>
+        <input v-on:click="savePlan(fname,lname)" type="submit" value="Submit">
+      </div>
+      <button v-on:click="closePopup('start-plan-form')">click me please</button>
+    </modal>
+
+    <modal name="notification-list">
+      <h2>hello world from "notification" button!!!</h2>
+      <button v-on:click="closePopup('notification-list')">click me please</button>
+    </modal>
+
+    <modal name="detail-progress-form">
+      <h2>hello world from "detail progress" item!!!</h2>
+      <button v-on:click="closePopup('detail-progress-form')">click me please</button>
+    </modal>
+
     <div class="item">
       <h2>Hello, User</h2>
     </div>
-    <div class="item">
+    <div id="notificationDiv" class="item">
       <h2>Notification section</h2>
-      <a href="#" class="notification">
+      <button v-on:click="notification" class="notification">
         <span>Inbox</span>
         <span class="badge">3</span>
-      </a>
+      </button>
     </div>
     <div class="item">
-      <button id="start-plan">Start you new plan</button>
+      <button v-on:click="addNewPlan" id="start-plan">Start you new plan</button>
     </div>
     <div></div>
     <div class="item">
       <p>Your reading progress : </p>
       <div align="center" class="scroll" >
-        <div class="book-item">
+        <div v-on:click="detailBook" class="book-item">
           <p>Book A</p>
           <div class="meter">
             <span style="width: 50%"></span>
@@ -83,6 +110,48 @@
   </div>
 </template>
 
+<script>
+export default {
+  datas: {
+    fname: '',
+    lname: ''
+  },
+  methods: {
+    // websocket
+    notification() {
+      this.$modal.show('notification-list');
+      console.log('hello from notification');
+    },
+    // on click button
+    addNewPlan() {
+      this.$modal.show('start-plan-form');
+      console.log('hello from add new plan');
+    },
+    // on click button
+    savePlan(fname, lname) {
+      console.log(fname, lname);
+    },
+    // on load page
+    getAllProgress() {
+      console.log('hello from get all progress');
+    },
+    // on click button
+    updateProgress() {
+      console.log('hello from updateProgress');
+    },
+    // on click item
+    detailBook() {
+      this.$modal.show('detail-progress-form');
+      console.log('hello for detail book');
+    },
+    // close popup
+    closePopup(name) {
+      this.$modal.hide(name);
+    }
+  }
+}
+</script>
+
 
 <style>
 .grid-container {
@@ -90,17 +159,21 @@
   grid-template: 150px / auto auto;
 }
 
-#start-plan {
-  height: 100px;
-  width: 50%;
-  font-size: 25pt;
-  font-weight: bold;
-  background-color: chartreuse;
-  border-radius: 20px;
-  font-family: Arial, Helvetica, sans-serif;
+.grid-container-popup {
+  display: grid;
+  grid-gap: 1px;
+  grid-template: 100px / auto auto;
 }
 
 .item {
+  border: 1px solid black;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin:10px, 10px; 
+  padding:10px; 
+}
+
+.item-popup {
   border: 1px solid black;
   margin-top: 10px;
   margin-left: 10px;
@@ -176,5 +249,23 @@
   border-radius: 50%;
   background: red;
   color: white;
+}
+
+.modal, .content {
+  background: #fff;
+  width: 80%;
+  max-width: 480px;
+  height: 200px;
+  max-height: 250px;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  border: 1px solid darkslategray;
+  padding: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
 }
 </style>
