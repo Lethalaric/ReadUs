@@ -1,20 +1,26 @@
 <template>
   <div class="grid-container">
 
-    <modal name="start-plan-form"> 
-      <h2>hello world from "start you new plan" button!!!</h2>
-      <div>
-        <label for="fname">First name : </label>
-        <input v-model="fname" type="text" id="fname" name="fname"><br><br>
+    <modal name="start-plan-form" > 
+      <h2>Start your planning now</h2>
+      <div class="grid-container-popup">
+
+        <div class="item-popup">
+          <label for="bookName">Book name : </label>
+          <input v-model="bookNameInput" type="text" id="bookName" name="bookName">
+        </div>
+        <div class="item-popup">
+          <label for="totalPage">Total of the page : </label>
+          <input v-model="totalPageInput" type="number" id="totalPage" name="totalPage">
+        </div>
+        <div class="item-popup">
+          <label for="totalTime">How long it will take? : </label>
+          <input v-model="totalTimeInput" type="number" id="totalTime" name="totalTime">
+        </div>
+        <div class="item-popup">
+          <input id="save-button" v-on:click="savePlan(bookName,totalPage,totalTime)" type="submit" value="Submit">
+        </div>
       </div>
-      <div>
-        <label for="lname">Last name : </label>
-        <input v-model="lname" type="text" id="lname" name="lname"><br><br>
-      </div>
-      <div>
-        <input v-on:click="savePlan(fname,lname)" type="submit" value="Submit">
-      </div>
-      <button v-on:click="closePopup('start-plan-form')">click me please</button>
     </modal>
 
     <modal name="notification-list">
@@ -22,9 +28,29 @@
       <button v-on:click="closePopup('notification-list')">click me please</button>
     </modal>
 
-    <modal name="detail-progress-form">
-      <h2>hello world from "detail progress" item!!!</h2>
-      <button v-on:click="closePopup('detail-progress-form')">click me please</button>
+    <modal name="detail-progress-form" :height=500>
+      <h2>Detail Progress</h2>
+      <div class="item-popup">
+        <p>Book name : {{ bookName }}</p>
+        <p>Total pages : {{ totalPage }}</p>
+        <p>Total days it take : {{ totalTime }}</p>
+        <p>Days have been spent : {{ currentDate }}</p>
+        <br>
+        <p>Overall progress :</p>
+        <progress-bar
+          :options="options"
+          :value="percentage"
+        />
+        <br>
+
+        <div class="item-popup">
+          <label for="currentNumberDate">Day : </label>
+          <input v-model="currentNumberDate" type="number" id="currentNumberDate" name="currentNumberDate"><br><br>
+          <label for="currentReadPageInput">Pages : </label>
+          <input v-model="currentReadPageInput" type="number" id="currentReadPageInput" name="currentReadPageInput"><br><br>
+        </div>
+        <button id="save-button" v-on:click="updateProgress(currentReadPageInput,currentNumberDate)">Update Progress</button>
+      </div>
     </modal>
 
     <div class="item">
@@ -38,7 +64,7 @@
       </button>
     </div>
     <div class="item">
-      <button v-on:click="addNewPlan" id="start-plan">Start you new plan</button>
+      <button v-on:click="addNewPlan" id="start-plan">Start your new plan</button>
     </div>
     <div></div>
     <div class="item">
@@ -46,63 +72,73 @@
       <div align="center" class="scroll" >
         <div v-on:click="detailBook" class="book-item">
           <p>Book A</p>
-          <div class="meter">
-            <span style="width: 50%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book B</p>
-          <div class="meter">
-            <span style="width: 25%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book C</p>
-          <div class="meter">
-            <span style="width: 10%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book D</p>
-          <div class="meter">
-            <span style="width: 90%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book E</p>
-          <div class="meter">
-            <span style="width: 75%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book F</p>
-          <div class="meter">
-            <span style="width: 25%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book G</p>
-          <div class="meter">
-            <span style="width: 15%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book H</p>
-          <div class="meter">
-            <span style="width: 0%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book I</p>
-          <div class="meter">
-            <span style="width: 70%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
         <div class="book-item">
           <p>Book J</p>
-          <div class="meter">
-            <span style="width: 45%"></span>
-          </div>
+          <progress-bar
+            :options="options"
+            :value="percentage"
+          />
         </div>
       </div>
     </div>
@@ -112,9 +148,53 @@
 
 <script>
 export default {
-  datas: {
-    fname: '',
-    lname: ''
+  data() {
+    return {
+      // data from db
+      bookName:'new book',
+      totalPage: 0,
+      totalTime: 0,
+      currentDate: 0,
+      percentage: 50,
+
+      fromDB: null,
+
+      // add plan form
+      bookNameInput: '',
+      totalPageInput: 0,
+      totalTimeInput: 0,
+
+      // update progress
+      currentReadPageInput: 1,
+      currentNumberDate: 1,
+
+      // progress bar options
+      options: {
+          text: {
+            color: '#FFFFFF',
+            shadowEnable: true,
+            shadowColor: '#000000',
+            fontSize: 14,
+            fontFamily: 'Helvetica',
+            dynamicPosition: false,
+            hideText: false
+          },
+          progress: {
+            color: '#2dbd2d',
+            backgroundColor: '#333333'
+          },
+          layout: {
+            height: 35,
+            width: 250,
+            verticalTextAlign: 61,
+            horizontalTextAlign: 43,
+            zeroOffset: 0,
+            strokeWidth: 30,
+            progressPadding: 0,
+            type: 'line'
+          }
+      }
+    }
   },
   methods: {
     // websocket
@@ -128,16 +208,22 @@ export default {
       console.log('hello from add new plan');
     },
     // on click button
-    savePlan(fname, lname) {
-      console.log(fname, lname);
+    savePlan(bookNameInput, totalPageInput, totalTimeInput) {
+      console.log(bookNameInput, totalPageInput, totalTimeInput);
+
+      this.$modal.hide('start-plan-form');
     },
     // on load page
     getAllProgress() {
       console.log('hello from get all progress');
     },
     // on click button
-    updateProgress() {
-      console.log('hello from updateProgress');
+    updateProgress(currentReadPageInput, currentNumberDate) {
+      this.$http.get('backend:3000/ReadUs/backend/v1/progress').then(response => (this.fromDB = response))
+      console.log(this.fromDB);
+      console.log(currentReadPageInput, currentNumberDate);
+
+      this.$modal.hide('detail-progress-form');
     },
     // on click item
     detailBook() {
@@ -148,7 +234,10 @@ export default {
     closePopup(name) {
       this.$modal.hide(name);
     }
-  }
+  },
+  // mounted() {
+
+  // }
 }
 </script>
 
@@ -174,10 +263,8 @@ export default {
 }
 
 .item-popup {
-  border: 1px solid black;
   margin-top: 10px;
   margin-left: 10px;
-  margin:10px, 10px; 
   padding:10px; 
 }
 
@@ -251,12 +338,12 @@ export default {
   color: white;
 }
 
-.modal, .content {
+/* .modal, .content {
   background: #fff;
   width: 80%;
   max-width: 480px;
-  height: 200px;
-  max-height: 250px;
+  height: 500px;
+  max-height: 500px;
   box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.08);
   border-radius: 3px;
   border: 1px solid darkslategray;
@@ -267,5 +354,27 @@ export default {
   left: 0;
   bottom: 0;
   margin: auto;
+} */
+
+#start-plan {
+  height: 100px;
+  width: 50%;
+  font-size: 25pt;
+  font-weight: bold;
+  background-color: chartreuse;
+  border-radius: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#save-button {
+  background: chartreuse;
+  width: 90%;
+  height: 50px;
+}
+
+#close-button {
+  background: rosybrown;
+  width: 90%;
+  height: 50px;
 }
 </style>

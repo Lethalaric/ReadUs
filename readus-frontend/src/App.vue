@@ -8,10 +8,6 @@
 import HelloWorld from './components/Homepage.vue'
 export default {
   name: 'App',
-  datas: {
-    fname: '',
-    lname: ''
-  },
   components: {
     HelloWorld
   }
