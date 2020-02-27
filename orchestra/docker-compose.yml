@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+    # infrastructure
+    # docker exec -i infra-mysql sh -c 'exec mysql -uroot -p"root"' < /home/mukhtar/Documents/Codes/ReadUs/dump/books.sql
+    infra-mysql:
+        container_name: infra-mysql
+        image: mysql
+        ports: 
+            - 3306:3306
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        volumes: 
+            - infrastructure:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+
+    # application
+    readus-backend:
+        container_name: backend
+        image: mukhtarharis/readus-backend:latest
+        ports: 
+            - 3000:3000
+        restart: always
+        depends_on: 
+            - infra-mysql
+        environment: 
+            - MYSQL_HOSTNAME=infra-mysql
+            - MYSQL_PORT=3306
+            - MYSQL_DATABASE=readus
+            - MYSQL_USERNAME=root
+            - MYSQL_PASSWORD=root
+
+
+volumes: 
+    infrastructure: 
