@@ -1,8 +1,8 @@
 version: '3'
 
 services:
+
     # infrastructure
-    # docker exec -i infra-mysql sh -c 'exec mysql -uroot -p"root"' < /home/mukhtar/Documents/Codes/ReadUs/dump/books.sql
     infra-mysql:
         container_name: infra-mysql
         image: mysql
@@ -12,10 +12,22 @@ services:
         restart: always
         volumes: 
             - infrastructure:/var/lib/mysql
+            - ./dumps:/docker-entrypoint-initdb.d
+        networks: 
+            - app
         environment:
             MYSQL_ROOT_PASSWORD: root
 
-    # application
+    ## mysql client
+    ## https://hub.docker.com/_/mysql
+    adminer:
+        container_name: adminer
+        image: adminer
+        restart: always
+        ports:
+          - 8080:8080
+
+    ## application
     readus-backend:
         container_name: backend
         image: mukhtarharis/readus-backend:latest
@@ -24,6 +36,10 @@ services:
         restart: always
         depends_on: 
             - infra-mysql
+        links: 
+            - infra-mysql
+        networks: 
+            - app
         environment: 
             - MYSQL_HOSTNAME=infra-mysql
             - MYSQL_PORT=3306
@@ -31,6 +47,20 @@ services:
             - MYSQL_USERNAME=root
             - MYSQL_PASSWORD=root
 
+    readus-frontend:
+        container_name: frontend
+        image: mukhtarharis/readus-frontend:latest
+        ports: 
+            - 8088:80
+        restart: always
+        depends_on: 
+            - readus-backend
+        networks: 
+            - app
+        links: 
+            - readus-backend
 
 volumes: 
     infrastructure: 
+networks: 
+    app:
