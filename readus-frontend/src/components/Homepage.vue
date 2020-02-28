@@ -6,19 +6,19 @@
       <div class="grid-container-popup">
 
         <div class="item-popup">
-          <label for="bookName">Book name : </label>
-          <input v-model="bookNameInput" type="text" id="bookName" name="bookName">
+          <label for="bookNameInput">Book name : </label>
+          <input v-model="bookNameInput" type="text" id="bookNameInput" name="bookNameInput">
         </div>
         <div class="item-popup">
-          <label for="totalPage">Total of the page : </label>
-          <input v-model="totalPageInput" type="number" id="totalPage" name="totalPage">
+          <label for="totalPageInput">Total of the page : </label>
+          <input v-model="totalPageInput" type="number" id="totalPageInput" name="totalPageInput">
         </div>
         <div class="item-popup">
-          <label for="totalTime">How long it will take? : </label>
-          <input v-model="totalTimeInput" type="number" id="totalTime" name="totalTime">
+          <label for="totalTimeInput">How long it will take? : </label>
+          <input v-model="totalTimeInput" type="number" id="totalTimeInput" name="totalTimeInput">
         </div>
         <div class="item-popup">
-          <input id="save-button" v-on:click="savePlan(bookName,totalPage,totalTime)" type="submit" value="Submit">
+          <input id="save-button" v-on:click="savePlan(bookNameInput,totalPageInput,totalTimeInput)" type="submit" value="Submit">
         </div>
       </div>
     </modal>
@@ -28,18 +28,19 @@
       <button v-on:click="closePopup('notification-list')">click me please</button>
     </modal>
 
-    <modal name="detail-progress-form" :height=500>
+    <modal name="detail-progress-form" :height=550>
       <h2>Detail Progress</h2>
       <div class="item-popup">
-        <p>Book name : {{ bookName }}</p>
-        <p>Total pages : {{ totalPage }}</p>
-        <p>Total days it take : {{ totalTime }}</p>
-        <p>Days have been spent : {{ currentDate }}</p>
+        <p>Book name : {{ bookDetail.bookName }}</p>
+        <p>Total pages : {{ bookDetail.totalPage }}</p>
+        <p>Total days it take : {{ bookDetail.totalTime }}</p>
+        <p>Days have been spent : 10 days </p>
+        <p>Total read pages : {{ bookDetail.currentPage }}</p>
         <br>
         <p>Overall progress :</p>
         <progress-bar
           :options="options"
-          :value="percentage"
+          :value="bookDetail.percentage"
         />
         <br>
 
@@ -49,7 +50,7 @@
           <label for="currentReadPageInput">Pages : </label>
           <input v-model="currentReadPageInput" type="number" id="currentReadPageInput" name="currentReadPageInput"><br><br>
         </div>
-        <button id="save-button" v-on:click="updateProgress(currentReadPageInput,currentNumberDate)">Update Progress</button>
+        <button id="save-button" v-on:click="updateProgress(bookDetail.id, currentReadPageInput,currentNumberDate)">Update Progress</button>
       </div>
     </modal>
 
@@ -67,78 +68,17 @@
       <button v-on:click="addNewPlan" id="start-plan">Start your new plan</button>
     </div>
     <div></div>
-    <div class="item">
+    <div class="item" >
       <p>Your reading progress : </p>
       <div align="center" class="scroll" >
-        <div v-on:click="detailBook" class="book-item">
-          <p>Book A</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book B</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book C</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book D</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book E</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book F</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book G</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book H</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book I</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
-        </div>
-        <div class="book-item">
-          <p>Book J</p>
-          <progress-bar
-            :options="options"
-            :value="percentage"
-          />
+        <div v-for="(progress, index) in allProgress" :key="index" >
+          <div v-on:click="detailBook(progress.id, progress.percentage)" class="book-item">
+            <p>{{progress.bookName}}</p>
+            <progress-bar
+              :options="options"
+              :value="progress.percentage"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -151,13 +91,16 @@ export default {
   data() {
     return {
       // data from db
-      bookName:'new book',
-      totalPage: 0,
-      totalTime: 0,
-      currentDate: 0,
+      // bookName:'new book',
+      // totalPage: 0,
+      // totalTime: 0,
+      // currentDate: 0,
       percentage: 50,
 
-      fromDB: null,
+      allProgress: null,
+      bookDetail: null,
+      errorStatus: null,
+      url: '',
 
       // add plan form
       bookNameInput: '',
@@ -210,34 +153,120 @@ export default {
     // on click button
     savePlan(bookNameInput, totalPageInput, totalTimeInput) {
       console.log(bookNameInput, totalPageInput, totalTimeInput);
+      
+      this.axios.post(this.urlBackend+'/ReadUs/backend/v1/addPlan', {
+        headers:{
+          'Content-type' : 'application/json'
+        },
+        "bookName":bookNameInput,
+        "totalPage":totalPageInput,
+        "totalTime":totalTimeInput
+      }).then(response => {
+        console.log('my response : ',response);
+      }).catch(error => {
+        if (!error.response) {
+            // network error
+            this.errorStatus = 'Error: Network Error';
+        } else {
+            this.errorStatus = error.response.data.message;
+
+        }
+        console.log(this.errorStatus);
+      });
 
       this.$modal.hide('start-plan-form');
     },
     // on load page
     getAllProgress() {
       console.log('hello from get all progress');
+      this.axios.get(this.urlBackend+'/ReadUs/backend/v1/progress').then(response => {
+        this.allProgress = response.data.books;
+        console.log('my response : ',response);
+        console.log('my db : ',this.allProgress);
+      }).catch(error => {
+        if (!error.response) {
+            // network error
+            this.errorStatus = 'Error: Network Error';
+        } else {
+            this.errorStatus = error.response.data.message;
+
+        }
+
+        console.log(this.errorStatus);
+      })
     },
     // on click button
-    updateProgress(currentReadPageInput, currentNumberDate) {
-      this.$http.get('backend:3000/ReadUs/backend/v1/progress').then(response => (this.fromDB = response))
-      console.log(this.fromDB);
-      console.log(currentReadPageInput, currentNumberDate);
+    updateProgress(id, currentReadPageInput, currentNumberDate) {
+      console.log('current page : ', currentReadPageInput);
+      console.log('current date : ', currentNumberDate);
+      
+      this.axios.put(this.urlBackend+'/ReadUs/backend/v1/editProgress', {
+        headers:{
+          'Content-type' : 'application/json'
+        },
+        "id":id,
+        "currentPage":currentReadPageInput,
+        "currentTime":currentNumberDate
+      }).then(response => {
+        console.log('my response : ',response);
+      }).catch(error => {
+        if (!error.response) {
+            // network error
+            this.errorStatus = 'Error: Network Error';
+        } else {
+            this.errorStatus = error.response.data.message;
 
+        }
+        console.log(this.errorStatus);
+      });
       this.$modal.hide('detail-progress-form');
     },
     // on click item
-    detailBook() {
+    detailBook(id, percentage) {
+      console.log(id);
+      this.axios.get(this.urlBackend+'/ReadUs/backend/v1/getDetail', {
+        params: {
+          id:id
+        }
+      }).then(response => {
+        this.bookDetail = response.data.book;
+        this.$set(this.bookDetail, "percentage", percentage);
+        console.log('my response : ',response);
+        console.log('my db : ',this.bookDetail);
+      }).catch(error => {
+        if (!error.response) {
+            // network error
+            this.errorStatus = 'Error: Network Error';
+        } else {
+            this.errorStatus = error.response.data.message;
+
+        }
+
+        console.log(this.errorStatus);
+      });
       this.$modal.show('detail-progress-form');
       console.log('hello for detail book');
     },
     // close popup
     closePopup(name) {
       this.$modal.hide(name);
+    },
+    bookDetailInitValue() {
+      if (null == this.bookDetail) {
+        this.bookDetail = {
+          bookName:'',
+          totalPage:0,
+          totalTime:0,
+          currentPage:0,
+          currentTime:0
+        }
+      }
     }
   },
-  // mounted() {
-
-  // }
+  beforeMount() {
+    this.getAllProgress(),
+    this.bookDetailInitValue()
+  }
 }
 </script>
 
