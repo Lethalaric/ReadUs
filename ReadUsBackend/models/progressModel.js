@@ -9,9 +9,10 @@ exports.progress = (code, arrayProgressItem) => {
 
 }
 
-exports.progressItem = (bookName, percentage) => {
+exports.progressItem = (id, bookName, percentage) => {
 
     var books = {
+        'id': id,
         'bookName': bookName,
         'percentage': percentage
     }

@@ -11,7 +11,8 @@ describe('mysqlTransaction', () => {
                 "bookName": "perang ketiga",
                 "totalPage": 100,
                 "totalTime": 2,
-                "totalRead": 0
+                "currentPage": 0,
+                "currentTime": 0
             };
             mysqlTransaction.insertBook(data)
                 .then(book => {
@@ -29,7 +30,8 @@ describe('mysqlTransaction', () => {
                 "bookName": "perang ketiga",
                 "totalPage": 'seratus',
                 "totalTime": 2,
-                "totalRead": 0
+                "currentPage": 0,
+                "currentTime": 'hai'
             };
             mysqlTransaction.insertBook(data)
                 .then(book => {
@@ -46,7 +48,8 @@ describe('mysqlTransaction', () => {
         'update data should success', () => {
             var data = {
                 "id": 101,
-                "totalRead": 20
+                "currentPage": 20,
+                "currentTime": 10
             };
             mysqlTransaction.editBook(data, { id: data.id })
                 .then(book => {
@@ -61,7 +64,8 @@ describe('mysqlTransaction', () => {
         'update data should failed', () => {
             var data = {
                 "id": 1000,
-                "totalRead": 20
+                "currentPage": 20,
+                "currentTime": 'hello'
             };
             mysqlTransaction.editBook(data, { id: data.id })
                 .then(book => {

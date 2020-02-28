@@ -9,8 +9,26 @@ exports.bookModel = (Sequelize, sequelize) => {
         totalTime: {
             type: Sequelize.INTEGER
         },
-        totalRead: {
+        currentPage: {
+            type: Sequelize.INTEGER
+        },
+        currentTime: {
             type: Sequelize.INTEGER
         },
     });
+}
+
+
+exports.singleJson = (statusCode, books) => {
+    return {
+        'status': statusCode,
+        'book': books
+    };
+}
+
+exports.multipleJson = (statusCode, books) => {
+    return {
+        'status': statusCode,
+        'books': books
+    };
 }

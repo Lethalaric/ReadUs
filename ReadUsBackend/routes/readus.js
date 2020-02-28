@@ -18,4 +18,9 @@ router.get('/progress', function(req, res, next) {
     readusController.progress(req, res, next);
 });
 
+// API : /ReadUs/backend/v1/getDetail
+router.get('/getDetail', function(req, res, next) {
+    readusController.getDetail(req, res, next);
+});
+
 module.exports = router;

@@ -3,6 +3,7 @@ var statusModel = require('../models/statusModel');
 var progress = require('../models/progressModel');
 var calc = require('../utilities/calculationUtilities');
 var ws = require('../utilities/websocketUtility');
+var bookModel = require('../models/bookModel');
 
 exports.addPlan = function(req, res, next) {
 
@@ -26,7 +27,6 @@ exports.editProgress = function(req, res, next) {
 
     // res.send("hello world from editProgress");
     if (Object.keys(req.body).length !== 0) {
-
         mysql.editBook(req.body, { id: req.body.id })
             .then(book => {
                 res.json(statusModel.status(200, 'you have update your progress'));
@@ -50,7 +50,7 @@ exports.progress = function(req, res, next) {
             books.forEach(book => {
 
                 var bookData = book.dataValues;
-                array.push(progress.progressItem(bookData.bookName, calc.calculatePercentage(bookData.totalPage, bookData.totalRead)));
+                array.push(progress.progressItem(bookData.id, bookData.bookName, calc.calculatePercentage(bookData.totalPage, bookData.currentPage)));
             });
 
             ws.sendMessage(1, array);
@@ -60,4 +60,20 @@ exports.progress = function(req, res, next) {
             console.log(err);
             res.json(statusModel.status(500, 'you do not have any progress yet'));
         });
+}
+
+exports.getDetail = function(req, res, next) {
+    console.log('id : ', req.query);
+    mysql.getBook({ id: req.query.id })
+        .then(books => {
+            // var arrayBooks = [];
+            // books.forEach(book => {
+            //     arrayBooks.push(book.dataValues);
+            // });
+            res.json(bookModel.singleJson(200, books[0].dataValues));
+
+        }).catch(err => {
+            console.log('error : ', err);
+            res.json(statusModel.status(500, 'failed to get book detail'));
+        })
 }

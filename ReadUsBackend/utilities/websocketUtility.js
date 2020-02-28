@@ -5,7 +5,7 @@ var clients = {};
 var counter = 1;
 
 exports.openConnection = (server) => {
-    wss = new WebSocket.Server({ server });
+    wss = new WebSocket.Server({ server, path: "/websocket" });
     console.log('connection is up : ', wss);
     wss.on('connection', (ws) => {
         clients[counter++] = ws;
@@ -17,5 +17,7 @@ exports.openConnection = (server) => {
 exports.sendMessage = (id, message) => {
     console.log('wss status : ', wss);
     console.log('client : ', clients);
-    clients[id].send('hello, here is message from server : ' + message);
+    if (clients[id] != null) {
+        clients[id].send('hello, here is message from server : ' + message);
+    }
 }

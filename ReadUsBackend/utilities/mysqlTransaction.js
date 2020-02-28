@@ -24,10 +24,28 @@ exports.insertBook = (book) => {
 }
 
 exports.editBook = (updatedBook, filter) => {
-    console.log('updatedBook : ', updatedBook);
-    console.log('filter : ', filter)
+    bookModel.bookModel(Sequelize, sequelize)
+        .findAll({
+            where: filter
+        }).then(books => {
+            book = books[0].dataValues;
+            updatedBook.currentPage += book.currentPage;
+            updatedBook.currentTime += book.currentTime;
+            console.log('updatedBook : ', updatedBook);
+            console.log('filter : ', filter)
+            bookModel.bookModel(Sequelize, sequelize)
+                .update(updatedBook, {
+                    where: filter
+                }).then(book => {
+                    console.log('success to update');
+                }).catch(err => {
+                    console.log('failed to update. ', err);
+                });
+        }).catch(err => {
+            console.log('error while select-update. ', err);
+        });
     return bookModel.bookModel(Sequelize, sequelize)
-        .update(updatedBook, {
+        .findAll({
             where: filter
         });
 }
