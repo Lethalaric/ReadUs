@@ -11,3 +11,6 @@ before_install:
     - cd ../readus-frontend
     - docker build -t mukhtarharis/readus-frontend:latest .
     - docker push mukhtarharis/readus-frontend:latest
+
+after_failure:
+    - cat MSBuild_*.failure.txt
