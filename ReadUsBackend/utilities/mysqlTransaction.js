@@ -29,8 +29,8 @@ exports.editBook = (updatedBook, filter) => {
             where: filter
         }).then(books => {
             book = books[0].dataValues;
-            updatedBook.currentPage += book.currentPage;
-            updatedBook.currentTime += book.currentTime;
+            updatedBook.currentPage = parseInt(updatedBook.currentPage) + parseInt(book.currentPage);
+            updatedBook.currentTime = parseInt(updatedBook.currentTime) + parseInt(book.currentTime);
             console.log('updatedBook : ', updatedBook);
             console.log('filter : ', filter)
             bookModel.bookModel(Sequelize, sequelize)
