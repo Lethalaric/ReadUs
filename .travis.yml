@@ -1,0 +1,13 @@
+language: ruby
+
+services:
+    - docker
+
+before_install:
+    - docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
+    - cd ./ReadUsBackend
+    - docker build -t mukhtarharis/readus-backend:latest .
+    - docker push mukhtarharis/readus-backend:latest
+    - cd ../readus-frontend
+    - docker build -t mukhtarharis/readus-frontend:latest .
+    - docker push mukhtarharis/readus-frontend:latest
