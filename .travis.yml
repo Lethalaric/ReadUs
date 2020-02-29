@@ -12,5 +12,8 @@ before_install:
     - docker build -t mukhtarharis/readus-frontend:latest .
     - docker push mukhtarharis/readus-frontend:latest
 
+script:
+    - bundle exec rake test
+    
 after_failure:
     - cat MSBuild_*.failure.txt
