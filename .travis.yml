@@ -1,9 +1,8 @@
-language: ruby
 
 services:
     - docker
 
-before_install:
+script:
     - docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
     - cd ./ReadUsBackend
     - docker build -t mukhtarharis/readus-backend:latest .
@@ -11,9 +10,3 @@ before_install:
     - cd ../readus-frontend
     - docker build -t mukhtarharis/readus-frontend:latest .
     - docker push mukhtarharis/readus-frontend:latest
-
-script:
-    - bundle exec rake test
-    
-after_failure:
-    - cat MSBuild_*.failure.txt
