@@ -7,7 +7,6 @@ type : POST
 json input :  
 ```
 {
-  "id" : 1,
   "bookName" : "Book A",
   "totalPage" : 100,
   "totalTime" : 10
@@ -17,7 +16,7 @@ json output :
 ```
 {
   "status" : 200,
-  "description" : "success"
+  "description" : "your new plan has been added"
 }
 ```
 
@@ -29,14 +28,15 @@ json input :
 ```
 {
   "id" : 1,
-  "totalRead" : 10
+  "currentRead" : 10,
+  "currentTime" : 2
 }
 ```
 json output :  
 ```
 {
   "status" : 200,
-  "description" : "success"
+  "description" : "you have update your progress"
 }
 ```
 
@@ -57,17 +57,27 @@ json output :
 }
 ```
 
-# Frontend API
-
-## Start reading  
-Goto/popup page to add new reading plan  
-## Get progress  
-Get all progress of books  
-## Detail progress
-Goto/popup page to details of progress  
-## Notification
-Notification section  
-## Save progress
-Send data to backend and return to homepage  
-## Submit progress
-Send data to backend and return to homepage  
+## Book Detail
+Get a detail of the book
+API : /ReadUs/backend/v1/getDetail
+type : GET
+query parameter :
+```
+id=1
+```
+json output :
+```
+{
+    "status": 200,
+    "book": {
+        "id": 2,
+        "bookName": "All Over Me",
+        "totalPage": 108,
+        "totalTime": 83,
+        "currentPage": 1276,
+        "currentTime": 7,
+        "createdAt": "2019-05-01",
+        "updatedAt": "2020-02-28"
+    }
+}
+```
