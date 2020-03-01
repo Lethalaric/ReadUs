@@ -53,6 +53,8 @@ exports.progress = function(req, res, next) {
                 array.push(progress.progressItem(bookData.id, bookData.bookName, calc.calculatePercentage(bookData.totalPage, bookData.currentPage)));
             });
 
+            array.sort((a, b) => (a.percentage > b.percentage) ? 1 : -1);
+
             ws.sendMessage(1, array);
 
             res.json(progress.progress(200, array));
