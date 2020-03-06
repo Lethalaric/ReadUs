@@ -1,0 +1,37 @@
+variables:
+    BACKEND: readus-backend
+    FRONTEND: readus-frontend
+    VERSION: latest
+docker-build-master:
+    # Official docker image.
+    image: docker:latest
+    stage: build
+    services:
+      - docker:dind
+    script:
+        - echo ---"$DOCKER_USERNAME"---"$DOCKER_PASSWORD"---
+        - docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
+        - cd ./ReadUsBackend
+        - docker build -t $DOCKER_USERNAME/$BACKEND:$VERSION .
+        - docker push $DOCKER_USERNAME/$BACKEND:$VERSION
+        - cd ../readus-frontend
+        - docker build -t $DOCKER_USERNAME/$FRONTEND:$VERSION .
+        - docker push $DOCKER_USERNAME/$FRONTEND:$VERSION
+    only:
+      - master
+    
+docker-deploy-master:
+    stage: deploy
+    script:
+        - pwd
+        - cd orchestra
+        - pwd
+        - docker-compose down || true
+        - docker-compose up -d
+    tags:
+        - shell-deploy
+    only:
+        - master
+    environment:
+        name: deploy
+        url: http://40.70.133.94
