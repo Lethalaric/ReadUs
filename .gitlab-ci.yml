@@ -27,8 +27,8 @@ docker-deploy-master:
         - pwd
         - cd orchestra
         - pwd
-        - docker push $DOCKER_USERNAME/$FRONTEND:$VERSION
-        - docker push $DOCKER_USERNAME/$BACKEND:$VERSION
+        - docker pull $DOCKER_USERNAME/$FRONTEND:$VERSION
+        - docker pull $DOCKER_USERNAME/$BACKEND:$VERSION
         - docker-compose down || true
         - docker-compose up -d
     tags:
