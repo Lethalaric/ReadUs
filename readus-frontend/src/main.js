@@ -15,7 +15,7 @@ Vue.mixin({
         return {
             get urlBackend() {
                 var url = process.env.VUE_APP_BACKEND_URL || 'http://backend:3000';
-                // console.log('url : ', url);
+                console.log('url : ', url);
                 return url;
             }
         }
