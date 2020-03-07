@@ -23,9 +23,12 @@ docker-build-master:
 docker-deploy-master:
     stage: deploy
     script:
+        - docker login -u"$DOCKER_USERNAME" -p"$DOCKER_PASSWORD"
         - pwd
         - cd orchestra
         - pwd
+        - docker push $DOCKER_USERNAME/$FRONTEND:$VERSION
+        - docker push $DOCKER_USERNAME/$BACKEND:$VERSION
         - docker-compose down || true
         - docker-compose up -d
     tags:
