@@ -179,7 +179,6 @@ export default {
     // on load page
     getAllProgress() {
       console.log('hello from get all progress');
-      console.log('url for getAllProgress : ',this.urlBackend);
       this.axios.get(this.urlBackend+'/ReadUs/backend/v1/progress').then(response => {
         this.allProgress = response.data.books;
         console.log('my response : ',response);
